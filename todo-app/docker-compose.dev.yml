@@ -1,0 +1,80 @@
+services:
+  app:
+    image: todo_front_dev
+    container_name: todo_front_dev
+    build:
+      context: ./todo-frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./todo-frontend:/usr/src/app
+      - node_modules_front:/usr/src/app/node_modules
+    environment:
+      VITE_BACKEND_URL: http://localhost:8080/api/
+    networks:
+      - app_network
+
+  server:
+    image: todo_back_dev
+    user: root
+    container_name: todo_back_dev
+    build:
+      context: ./todo-backend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./todo-backend:/usr/src/app
+      - node_modules_back:/usr/src/app/node_modules
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - MONGO_URL=mongodb://root:example@mongo:27017/the_database?authSource=admin
+    depends_on:
+      - mongo
+    networks:
+      - app_network
+
+  mongo:
+    image: mongo
+    container_name: todo_backend_mongo
+    ports:
+      - 3456:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+    volumes:
+      - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - mongo_data:/data/db
+    networks:
+      - app_network
+
+  redis:
+    image: redis:latest
+    container_name: todo_backend_redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./todo-backend/redis_data:/data
+    networks:
+      - app_network
+
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app
+      - server
+    networks:
+      - app_network
+
+volumes:
+  node_modules_front:
+  mongo_data:
+  redis_data:
+  node_modules_back:
+
+networks:
+  app_network:

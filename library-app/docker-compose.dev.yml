@@ -1,0 +1,67 @@
+services:
+  app:
+    image: library_front_dev
+    container_name: library_front_dev
+    build:
+      context: ./library-frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./library-frontend:/usr/src/app
+      - node_modules_front:/usr/src/app/node_modules
+    networks:
+      - app_network
+
+  server:
+    image: library_back_dev
+    user: root
+    container_name: library_back_dev
+    build:
+      context: ./library_backend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./library_backend:/usr/src/app
+      - node_modules_back:/usr/src/app/node_modules
+    env_file:
+      - ./library_backend/.env
+    ports:
+      - 4000:4000 # This won't work without defining port here, might be because of websocket
+    depends_on:
+      - mongo_library
+    networks:
+      - app_network
+
+  mongo_library:
+    image: mongo
+    container_name: library_backend_mongo
+    ports:
+      - 3456:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: library_database
+    volumes:
+      - ./library_backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - mongo_data:/data/db
+    networks:
+      - app_network
+
+  nginx_library:
+    image: nginx:1.20.1
+    container_name: reverse-proxy-library
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - app
+      - server
+    networks:
+      - app_network
+
+volumes:
+  node_modules_front:
+  mongo_data:
+  node_modules_back:
+
+networks:
+  app_network:

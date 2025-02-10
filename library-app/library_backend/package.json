@@ -1,0 +1,42 @@
+{
+  "name": "library_backend",
+  "version": "1.0.0",
+  "description": "tasks 8.1-8.7",
+  "main": "library-backend.js",
+  "scripts": {
+    "start": "NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env  NODE_ENV=test node --test",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "tasks",
+    "library"
+  ],
+  "author": "Antti Kortelainen",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@apollo/server": "^4.11.2",
+    "@graphql-tools/schema": "^10.0.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "graphql": "^16.9.0",
+    "graphql-subscriptions": "^2.0.0",
+    "graphql-ws": "^5.16.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.0.0",
+    "mongoose-unique-validator": "^4.0.1",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.13.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.11.0",
+    "nodemon": "^3.1.7",
+    "prettier": "3.3.3"
+  }
+}
