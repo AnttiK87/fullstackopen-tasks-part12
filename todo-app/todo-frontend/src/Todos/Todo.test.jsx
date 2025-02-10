@@ -4,8 +4,8 @@ import Todo from "./Todo";
 import { describe, vi } from "vitest";
 
 describe("Todo component", () => {
-  //test that blogs info in rendered correctly
-  test("renders todos content correctly", () => {
+  //test that todo is rendered correctly
+  test("renders undone todos correctly", () => {
     const todo = {
       _id: "67a460217ac5dde53b544ca7",
       text: "Test todo",
@@ -31,7 +31,7 @@ describe("Todo component", () => {
     expect(setDoneButton).toBeDefined();
   });
 
-  test("renders todos content correctly 2", () => {
+  test("renders done todos correctly", () => {
     const todo = {
       _id: "67a460217ac5dde53b544ca7",
       text: "Test todo",

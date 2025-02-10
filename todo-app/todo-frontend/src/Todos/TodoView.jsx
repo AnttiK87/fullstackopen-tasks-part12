@@ -34,8 +34,6 @@ const TodoView = () => {
     refreshTodos();
   };
 
-  //console.log(import.meta.env);
-
   return (
     <>
       <h1>Todos</h1>
